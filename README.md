@@ -9,7 +9,7 @@ The system counts from **00:00 to 59:59** and displays the result on a 7-segment
 Platform
 - FPGA Board: DE1 Cyclone II
 - Software: Quartus II 13.0
-- Design Method: AHDL + Block Diagram (BDF)
+- Design Method: AHDL (really a fucking old guy compared with verilog, fuck you XJTLU!)
 
 Features
 - Counts from 00:00 to 59:59 (MM:SS format)
@@ -21,4 +21,4 @@ Features
 - Supports global reset (reset entire system to 00:00)
 - Designed using AHDL and schematic-based methodology
 
-- I finished it with 1h22min！ 你也来试试吧！
+- I finished it within 1h22min！ 你也来试试吧！
