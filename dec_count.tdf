@@ -1,0 +1,124 @@
+--SUBDESIGN dec_count
+--(
+--    enc, ent, clk : INPUT;
+--    clear         : INPUT;
+--    value[3..0]   : OUTPUT;
+--    rco           : OUTPUT;
+--)
+--
+--VARIABLE
+--    count[3..0] : DFF;
+--
+--BEGIN
+--    count[].clk = clk;
+--    value[]     = count[];
+--
+--    IF (!clear) THEN
+--        count[].d = 0;
+--
+--    ELSIF (enc & ent & (count[].q != 9)) THEN
+--        count[].d = count[].q + 1;
+--
+--    ELSIF (enc & ent & (count[].q == 9)) THEN
+--        count[].d = 0;
+--
+--    ELSE
+--        count[].d = count[].q;
+--    END IF;
+--
+--    rco = ((count[].q == 9) & ent);
+--
+--END;
+
+
+
+
+
+--SUBDESIGN dec_count
+--(
+--    enc, ent, clk : INPUT;
+--    clear         : INPUT;
+--    value[3..0]   : OUTPUT;
+--    rco           : OUTPUT;
+--)
+--
+--VARIABLE
+--    count[3..0] : DFF;
+--    rco_ff      : DFF;
+--BEGIN
+--    count[].clk = clk;
+--    rco_ff.clk  = clk;
+--
+--    value[] = count[];
+--
+--    IF (!clear) THEN
+--        count[].d = 0;
+--    ELSIF (enc & ent & (count[].q != 9)) THEN
+--        count[].d = count[].q + 1;
+--    ELSIF (enc & ent & (count[].q == 9)) THEN
+--        count[].d = 0;
+--    ELSE
+--        count[].d = count[].q;
+--    END IF;
+--
+--    rco_ff.d = ((count[].q == 9) & enc & ent);
+--
+--    rco = rco_ff.q;
+--END;
+
+
+SUBDESIGN dec_count
+(
+    enc, ent, clk, clear, uad : INPUT;
+    
+    value[3..0]   : OUTPUT;
+    rco           : OUTPUT;
+)
+
+VARIABLE
+    count[3..0] : DFF;
+    rco_ff      : DFF;
+BEGIN
+    count[].clk = clk;
+    rco_ff.clk  = clk;
+
+    value[] = count[];
+	 rco = rco_ff.q;
+
+    IF (!clear) THEN
+        count[].d = 0;
+		  
+	 ELSIF ((clear==Vcc) & (uad == Vcc) ) THEN
+				
+		    IF (enc & ent & (count[].q != 9)) THEN
+				  count[].d = count[].q + 1;
+				  
+			 ELSIF (enc & ent & (count[].q == 9)) THEN
+				  count[].d = 0;
+				  
+			 ELSE
+				  count[].d = count[].q;
+				  
+			 END IF;
+				  
+	 ELSE
+		  
+		     IF (enc & ent & (count[].q != 0)) THEN
+				  count[].d = count[].q - 1;
+			  ELSIF (enc & ent & (count[].q == 0)) THEN
+			     count[].d = 9;
+			  ELSE 
+			     count[].d = count[].q;
+			  END IF;
+				    
+				  
+    END IF;
+
+    rco_ff.d = (((count[].q == 9) & enc & ent & uad )#((count[].q == 0) & enc & ent & (!uad)));
+
+    
+END;
+
+
+
+

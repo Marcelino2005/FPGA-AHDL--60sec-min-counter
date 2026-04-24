@@ -1,0 +1,61 @@
+--JXY
+SUBDESIGN dec_count6
+(
+  enc, ent, clk, clear, uad: INPUT;
+  value[3..0] : OUTPUT;
+  rco         : OUTPUT;
+
+)
+
+VARIABLE
+     count[3..0] : DFF;
+	  rco_ff      : DFF;
+	  
+	  
+BEGIN
+		count[].clk = clk;
+		rco_ff.clk = clk;
+		
+		value[]=count[];
+		rco = rco_ff.q;
+		
+		IF((!clear)==Vcc) THEN
+			count[].d = 0;
+			--*directly q=0 is forbidden		
+			
+		ELSIF(((clear)==Vcc) & (uad==Vcc)) THEN --can be more easier
+				IF(enc & ent & (count[].q != 5)) THEN
+				  count[].d = count[].q + 1;
+				ElSIF(enc & ent & (count[].q ==5 )) THEN
+				  count[].d = 0;
+				ELSE
+				  count[].d = count[].q;
+				  
+				END IF;
+				
+	   ELSE
+		
+				IF(enc & ent & (count[].q != 0 )) THEN
+				  count[].d = count[].q - 1;
+				ELSIF(enc & ent & (count[].q ==0 ))THEN
+				  count[].d = 5;
+				ELSE
+				  count[].d = count[].q;
+				END IF;
+			
+	   END IF;
+		
+		rco_ff.d = (((count[].q == 5) & enc & ent & uad )#((count[].q == 0) & enc & ent & (!uad)));
+		
+END;
+		
+		  
+
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
